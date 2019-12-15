@@ -70,18 +70,6 @@ float *gaussian_kernel(float sigma, int *k)
         return kernel;
 }
 
-void copy_to_buffer(float *buffer, const uchar *src, int n, int border_size,
-                    int stride)
-{
-        for (int i = 0; i < n; ++i)
-                buffer[border_size + i] = src[i * stride];
-
-        for (int i = 0; i < border_size; ++i) {
-                buffer[i] = buffer[border_size];
-                buffer[i + n + border_size] = buffer[border_size + n - 1];
-        }
-}
-
 void convolve_buffer(float *buffer, int n, const float *kernel, int k)
 {
         for (int i = 0; i < n; ++i) {
@@ -91,12 +79,6 @@ void convolve_buffer(float *buffer, int n, const float *kernel, int k)
                 }
                 buffer[i] = sum;
         }
-}
-
-void copy_from_buffer(uchar *dest, const float *buffer, int n, int stride)
-{
-        for (int i = 0; i < n; ++i)
-                dest[i * stride] = buffer[i];
 }
 
 }

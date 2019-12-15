@@ -37,13 +37,31 @@ class Image;
 
 typedef unsigned char uchar;
 
+struct Keypoint {
+        float x;
+        float y;
+        float score;
+};
+
 Image *short_to_image(const short *ptr, int width, int height);
 
 float *gaussian_kernel(float sigma, int *k);
 
-void copy_to_buffer(float *buffer, const uchar *src, int n, int border_size, int stride);
+template <typename T> void copy_to_buffer(float *buffer, const T src, int n, int border_size, int stride) {
+        for (int i = 0; i < n; ++i)
+                buffer[border_size + i] = src[i * stride];
+
+        for (int i = 0; i < border_size; ++i) {
+                buffer[i] = 0;
+                buffer[i + n + border_size] = 0;
+        }
+}
 void convolve_buffer(float *buffer, int n, const float *kernel, int k);
-void copy_from_buffer(uchar *dest, const float *buffer, int n, int stride);
+
+template <typename T> void copy_from_buffer(T dest, const float *buffer, int n, int stride) {
+       for (int i = 0; i < n; ++i)
+                dest[i * stride] = buffer[i];
+}
 
 }
 

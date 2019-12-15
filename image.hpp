@@ -31,7 +31,28 @@
 #ifndef IMAGE_HPP
 #define IMAGE_HPP
 
-#include <string>
+#include <iostream>
+#include <fstream>
+#include <cmath>
+#include <cstring>
+#include <ostream>
+#include <memory>
+#include <vector>
+
+using std::cerr;
+using std::clog;
+using std::cos;
+using std::endl;
+using std::exp;
+using std::ifstream;
+using std::ios;
+using std::memset;
+using std::ofstream;
+using std::sin;
+using std::string;
+using std::unique_ptr;
+using std::vector;
+
 
 #include "util.hpp"
 
@@ -66,12 +87,54 @@ public:
         void rotate(Image *rotated, double theta, double tx, double ty) const;
         void rotate_centered(Image *rotated, double theta) const;
 
-        void smooth_x(float sigma);
-        void smooth_y(float sigma);
-        void smooth(float sigma_x, float sigma_y);
+        template <typename T> void smooth_x(float sigma, T data) {
+        
+                if (m_n_channels != 1) {
+                        cerr << "Smooth-x only works on grayscale images!" << endl;
+                        return;
+                }
+
+                int k = 0;
+                unique_ptr<float []> kernel(gaussian_kernel(sigma, &k));
+
+                int l = k / 2;
+                unique_ptr<float []>  buffer(new float[m_width + 2 * l]);
+
+                for (int y = 0; y < m_height - 1; ++y) {
+                        T row_data = data + y * m_width;
+                        copy_to_buffer<T>(buffer.get(), row_data, m_width, l, 1);
+                        convolve_buffer(buffer.get(), m_width, kernel.get(), k);
+                        copy_from_buffer<T>(row_data, buffer.get(), m_width, 1);
+                }
+        }
+        template <typename T> void smooth_y(float sigma, T data) {
+                if (m_n_channels != 1) {
+                        cerr << "Smooth-x only works on grayscale images!" << endl;
+                        return;
+                }
+
+                int k = 0;
+                unique_ptr<float []> kernel(gaussian_kernel(sigma, &k));
+
+                int l = k / 2;
+                unique_ptr<float []>  buffer(new float[m_height + 2 * l]);
+
+                for (int x = 0; x < m_width - 1; ++x) {
+                        copy_to_buffer<T>(buffer.get(), data + x, m_height, l, m_step);
+                        convolve_buffer(buffer.get(), m_height, kernel.get(), k);
+                        copy_from_buffer<T>(data + x, buffer.get(), m_height, m_step);
+                }
+        }
+        template <typename T> void smooth(float sigma_x, float sigma_y, T data) {
+                smooth_x<T>(sigma_x, data);
+                smooth_y<T>(sigma_y, data);
+        }
 
         short *deriv_x() const;
         short *deriv_y() const;
+
+        std::vector<Keypoint> harris_corners(float threshold, float k, float sigma);
+        short* computeImultiplyI(short* Ix, short* Iy);
 
         bool write_pnm(const std::string& filename) const;
         bool read_pnm (const std::string& filename);

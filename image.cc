@@ -49,6 +49,7 @@ using std::ofstream;
 using std::sin;
 using std::string;
 using std::unique_ptr;
+using std::vector;
 
 namespace ceng391 {
 
@@ -372,50 +373,50 @@ void Image::rotate_centered(Image *rotated, double theta) const
         this->rotate(rotated, theta, tx_cap, ty_cap);
 }
 
-void Image::smooth_x(float sigma)
-{
-        if (m_n_channels != 1) {
-                cerr << "Smooth-x only works on grayscale images!" << endl;
-                return;
-        }
+vector<Keypoint> Image::harris_corners(float threshold, float k, float sigma) {
+        vector<Keypoint> a;
 
-        int k = 0;
-        unique_ptr<float []> kernel(gaussian_kernel(sigma, &k));
+        short *Ix = deriv_x();
+        short *Iy = deriv_y(); 
+        
+        short* Ix_2 = computeImultiplyI(Ix, Ix);
+        short* Iy_2 = computeImultiplyI(Iy, Iy);
+        short* Ix_Iy = computeImultiplyI(Ix, Iy);
+        
 
-        int l = k / 2;
-        unique_ptr<float []>  buffer(new float[m_width + 2 * l]);
+        // Convolve Ix^2 and Iy^2 and IxIy with a gaussian having value sigma
 
-        for (int y = 0; y < m_height - 1; ++y) {
-                copy_to_buffer(buffer.get(), this->data(y), m_width, l, 1);
-                convolve_buffer(buffer.get(), m_width, kernel.get(), k);
-                copy_from_buffer(this->data(y), buffer.get(), m_width, 1);
-        }
+        // Create an empty keypoint vector
+
+        // For each pixel compute the Harris corners score
+        // S = det(M) - ktr(M)^2
+
+        // Check if the Harris cornerness score is S is bot a local maximum and larger than the threshold given as a parameter
+
+        // Then add a keypoint of (x,y) with score S to the vector of keypoints to be returned.
+
+        // return the keypoint vector
+
+
+        return a;
 }
 
-void Image::smooth_y(float sigma)
-{
-        if (m_n_channels != 1) {
-                cerr << "Smooth-x only works on grayscale images!" << endl;
-                return;
+short* Image::computeImultiplyI(short* Ix, short* Iy) {
+    short *result = new short[m_width * m_height];
+        
+        for(int y = 0; y < m_height; y++) {
+                short* row_Ix = Ix + y * m_width;
+                short* row_Iy = Iy + y * m_width;
+
+                short* row_result = result + y * m_width;
+
+                for(int x = 0; x < m_width; x++) {
+                        row_result[x] = row_Ix[x] * row_Iy[x];
+                }
+                
         }
 
-        int k = 0;
-        unique_ptr<float []> kernel(gaussian_kernel(sigma, &k));
-
-        int l = k / 2;
-        unique_ptr<float []>  buffer(new float[m_height + 2 * l]);
-
-        for (int x = 0; x < m_width - 1; ++x) {
-                copy_to_buffer(buffer.get(), m_data + x, m_height, l, m_step);
-                convolve_buffer(buffer.get(), m_height, kernel.get(), k);
-                copy_from_buffer(m_data + x, buffer.get(), m_height, m_step);
-        }
-}
-
-void Image::smooth(float sigma_x, float sigma_y)
-{
-        smooth_x(sigma_x);
-        smooth_y(sigma_y);
+        return result;
 }
 
 }

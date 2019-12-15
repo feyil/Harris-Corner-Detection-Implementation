@@ -1,0 +1,17 @@
+[
+{
+  "directory": "/home/feyil/Desktop/CENG391 Fall 2019/ceng391_04T/build",
+  "command": "/usr/bin/c++    -g   -std=gnu++11 -o CMakeFiles/image-test.dir/image.cc.o -c \"/home/feyil/Desktop/CENG391 Fall 2019/ceng391_04T/image.cc\"",
+  "file": "/home/feyil/Desktop/CENG391 Fall 2019/ceng391_04T/image.cc"
+},
+{
+  "directory": "/home/feyil/Desktop/CENG391 Fall 2019/ceng391_04T/build",
+  "command": "/usr/bin/c++    -g   -std=gnu++11 -o CMakeFiles/image-test.dir/util.cc.o -c \"/home/feyil/Desktop/CENG391 Fall 2019/ceng391_04T/util.cc\"",
+  "file": "/home/feyil/Desktop/CENG391 Fall 2019/ceng391_04T/util.cc"
+},
+{
+  "directory": "/home/feyil/Desktop/CENG391 Fall 2019/ceng391_04T/build",
+  "command": "/usr/bin/c++    -g   -std=gnu++11 -o CMakeFiles/image-test.dir/image_test.cc.o -c \"/home/feyil/Desktop/CENG391 Fall 2019/ceng391_04T/image_test.cc\"",
+  "file": "/home/feyil/Desktop/CENG391 Fall 2019/ceng391_04T/image_test.cc"
+}
+]

@@ -1,0 +1,6 @@
+/home/feyil/Desktop/CENG391 Fall 2019/ceng391_04T/build/CMakeFiles/edit_cache.dir
+/home/feyil/Desktop/CENG391 Fall 2019/ceng391_04T/build/CMakeFiles/test-valgrind.dir
+/home/feyil/Desktop/CENG391 Fall 2019/ceng391_04T/build/CMakeFiles/image-test.dir
+/home/feyil/Desktop/CENG391 Fall 2019/ceng391_04T/build/CMakeFiles/rebuild_cache.dir
+/home/feyil/Desktop/CENG391 Fall 2019/ceng391_04T/build/CMakeFiles/edit.dir
+/home/feyil/Desktop/CENG391 Fall 2019/ceng391_04T/build/CMakeFiles/archive.dir

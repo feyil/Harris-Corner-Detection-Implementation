@@ -374,7 +374,6 @@ void Image::rotate_centered(Image *rotated, double theta) const
 }
 
 vector<Keypoint> Image::harris_corners(float threshold, float k, float sigma) {
-        vector<Keypoint> a;
 
         short *Ix = deriv_x();
         short *Iy = deriv_y(); 
@@ -382,23 +381,52 @@ vector<Keypoint> Image::harris_corners(float threshold, float k, float sigma) {
         short* Ix_2 = computeImultiplyI(Ix, Ix);
         short* Iy_2 = computeImultiplyI(Iy, Iy);
         short* Ix_Iy = computeImultiplyI(Ix, Iy);
+
+        delete [] Ix;
+        delete [] Iy;
+
+        // Gaussian Blurring
+        smooth<short*>(sigma, sigma, Ix_2);
+        smooth<short*>(sigma, sigma, Iy_2);
+        smooth<short*>(sigma, sigma, Ix_Iy);
+
+        double* image_harris_scores = calculateHarrisScore(Ix_2, Iy_2, Ix_Iy, k);
+
+        delete [] Ix_2;
+        delete [] Iy_2;
+        delete [] Ix_Iy;
         
+        vector<Keypoint> keyPointVect;
 
-        // Convolve Ix^2 and Iy^2 and IxIy with a gaussian having value sigma
+        std::cerr<<(image_harris_scores + 5 * m_width)[10];
 
-        // Create an empty keypoint vector
+        int frame_padding = 5;
+        for(int y = 0 + frame_padding; y < m_height - frame_padding; y++) {
+                double* row_top = image_harris_scores + (y - 1) * m_width; 
+                double* row_center = image_harris_scores + y * m_width;
+                double* row_bottom = image_harris_scores + (y + 1) * m_width;
 
-        // For each pixel compute the Harris corners score
-        // S = det(M) - ktr(M)^2
+                for(int x = 0 + frame_padding; x < m_width - frame_padding; x++) {
+                      double score = row_center[x];
 
-        // Check if the Harris cornerness score is S is bot a local maximum and larger than the threshold given as a parameter
+                      if(       score > row_center[x - 1] && 
+                                score > row_center[x + 1] && 
+                                score > row_top[x] && 
+                                score > row_bottom[x] &&
+                                score > threshold) {
+                        
+                        Keypoint tmp;
+                        tmp.x = x;
+                        tmp.y = y;
+                        tmp.score = score;
 
-        // Then add a keypoint of (x,y) with score S to the vector of keypoints to be returned.
+                        keyPointVect.push_back(tmp);
 
-        // return the keypoint vector
-
-
-        return a;
+                      }
+                }
+        }
+        
+        return keyPointVect;
 }
 
 short* Image::computeImultiplyI(short* Ix, short* Iy) {
@@ -414,6 +442,31 @@ short* Image::computeImultiplyI(short* Ix, short* Iy) {
                         row_result[x] = row_Ix[x] * row_Iy[x];
                 }
                 
+        }
+
+        return result;
+}
+
+double* Image::calculateHarrisScore(short* Ix_2, short* Iy_2, short* Ix_Iy, float k) {
+        double *result = new double[m_width * m_height];
+
+        // For each pixel compute the Harris corners score
+        // S = det(M) - ktr(M)^2
+
+        for(int y = 0; y < m_height; y++) {
+                double* row_result = result + y * m_width;
+
+                short* row_Ix = Ix_2 + y * m_width;
+                short* row_Iy = Iy_2 + y * m_width;
+                short* row_Ix_Iy = Ix_Iy + y * m_width;
+                
+                for(int x = 0; x < m_width; x++) {
+                        double determinant =  Ix_2[x] * Iy_2[y] - Ix_Iy[x] * Ix_Iy[x];
+                        double trace = Ix_2[x] + Iy_2[x];
+
+                        // Score
+                        row_result[x] = determinant - k * (trace * trace);
+                }
         }
 
         return result;

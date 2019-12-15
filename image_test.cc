@@ -30,9 +30,10 @@
 // ------------------------------
 #include <cstdlib>
 #include <iostream>
+#include <vector>
 
 #include "image.hpp"
-
+#include "util.hpp"
 
 using ceng391::Image;
 using ceng391::short_to_image;
@@ -43,7 +44,12 @@ int main(int argc, char** argv)
 {
      Image* img = new Image(4, 4, 1);
      img->read_pnm("small_watch.pgm");
-     img->harris_corners(1,1,1);
+     vector<ceng391::Keypoint> points = img->harris_corners(20000,1,1.2);
+
+     for(int i = 0; i < points.size(); i++) {
+          cout<<i<<". Keypoint: ("<<points.at(i).x<<","<<points.at(i).y<<") Score:"<<points.at(i).score<<endl;
+
+     }
 
      short *dx = img->deriv_x();
      short *dy = img->deriv_y();
@@ -95,8 +101,8 @@ int main(int argc, char** argv)
      //    dx_img->write_pnm("/tmp/dx");
      //    dy_img->write_pnm("/tmp/dy");
 
-        float sigma_x = 1.0f;
-        float sigma_y = 2.5f;
+        float sigma_x = 1.2f;
+        float sigma_y = 1.2f;
         img->smooth<>(sigma_x, sigma_y, dx);
         img->write_pnm("/tmp/smoothed_xy");
 

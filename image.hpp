@@ -135,6 +135,7 @@ public:
 
         std::vector<Keypoint> harris_corners(float threshold, float k, float sigma);
         short* computeImultiplyI(short* Ix, short* Iy);
+        double* calculateHarrisScore(short* Ix_2, short* Iy_2, short* Ix_Iy, float k);
 
         bool write_pnm(const std::string& filename) const;
         bool read_pnm (const std::string& filename);

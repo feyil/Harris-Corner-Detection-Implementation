@@ -1,1 +1,0 @@
-/usr/bin/c++  -g  -rdynamic CMakeFiles/image-test.dir/image.cc.o CMakeFiles/image-test.dir/util.cc.o CMakeFiles/image-test.dir/image_test.cc.o  -o image-test 

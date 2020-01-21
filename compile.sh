@@ -13,6 +13,6 @@ cd ..
 cp small_watch.pgm build/
 
 cd build
-./image-test
+valgrind ./image-test
 
 

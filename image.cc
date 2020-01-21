@@ -1,3 +1,5 @@
+// 230201057
+
 // ------------------------------
 // Written by Mustafa Ozuysal
 // Contact <mustafaozuysal@iyte.edu.tr> for comments and bug reports
@@ -398,8 +400,6 @@ vector<Keypoint> Image::harris_corners(float threshold, float k, float sigma) {
         
         vector<Keypoint> keyPointVect;
 
-        std::cerr<<(image_harris_scores + 5 * m_width)[10];
-
         int frame_padding = 5;
         for(int y = 0 + frame_padding; y < m_height - frame_padding; y++) {
                 double* row_top = image_harris_scores + (y - 1) * m_width; 
@@ -425,6 +425,8 @@ vector<Keypoint> Image::harris_corners(float threshold, float k, float sigma) {
                       }
                 }
         }
+
+        delete [] image_harris_scores;
         
         return keyPointVect;
 }

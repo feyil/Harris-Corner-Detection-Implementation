@@ -1,3 +1,5 @@
+// 230201057
+
 // ------------------------------
 // Written by Mustafa Ozuysal
 // Contact <mustafaozuysal@iyte.edu.tr> for comments and bug reports
@@ -44,79 +46,15 @@ int main(int argc, char** argv)
 {
      Image* img = new Image(4, 4, 1);
      img->read_pnm("small_watch.pgm");
-     vector<ceng391::Keypoint> points = img->harris_corners(20000,1,1.2);
+     vector<ceng391::Keypoint> points = img->harris_corners(2000,1,1.2);
 
      for(int i = 0; i < points.size(); i++) {
           cout<<i<<". Keypoint: ("<<points.at(i).x<<","<<points.at(i).y<<") Score:"<<points.at(i).score<<endl;
 
      }
 
-     short *dx = img->deriv_x();
-     short *dy = img->deriv_y();
+     delete img;
 
-     // dx = img->computeImultiplyI(dx, dx);
-     cout << "Derivatives computed" << endl;
-
-     Image *dx_img = short_to_image(dx, img->w(), img->h());
-     Image *dy_img = short_to_image(dy, img->w(), img->h());
-     dx_img->write_pnm("/tmp/dx");
-     dy_img->write_pnm("/tmp/dy");
-
-     //    cout << "(" << gray->w() << "x" << gray->h() << ") channels: "
-     //         << gray->n_ch() << " step: " << gray->step() << endl;
-     //    gray->set_zero();
-     //    gray->set_rect(32, 32, 64, 64, 255);
-     //    gray->write_pnm("/tmp/test_image_gray");
-     //    delete gray;
-
-     //    Image* rgb = Image::new_rgb(128, 128);
-     //    cout << "(" << rgb->w() << "x" << rgb->h() << ") channels: "
-     //         << rgb->n_ch() << " step: " << rgb->step() << endl;
-     //    rgb->set_zero();
-     //    rgb->set_rect(32, 32, 64, 64, 255, 0, 255);
-     //    rgb->write_pnm("/tmp/test_image_rgb");
-     //    delete rgb;
-
-     //    Image img(4, 4, 1);
-     //    img.read_pnm("/tmp/test_image_gray.pgm");
-     //    img.to_rgb();
-     //    img.write_pnm("/tmp/test_image_gray2rgb");
-
-     //    img.read_pnm("/tmp/test_image_rgb.ppm");
-     //    img.to_grayscale();
-     //    img.write_pnm("/tmp/test_image_rgb2gray");
-
-     //    img.read_pnm("../small_city.pgm");
-     //    Image rotated(img.w()*2, img.h()*2, 1);
-     //    double theta = 45.0 * 3.1415926 / 180;
-     //    img.rotate_centered(&rotated, theta);
-     //    rotated.write_pnm("/tmp/small_city_crotated_45");
-
-     //    short *dx = img.deriv_x();
-     //    short *dy = img.deriv_y();
-     //    cout << "Derivatives computed" << endl;
-
-     //    Image *dx_img = short_to_image(dx, img.w(), img.h());
-     //    Image *dy_img = short_to_image(dy, img.w(), img.h());
-     //    dx_img->write_pnm("/tmp/dx");
-     //    dy_img->write_pnm("/tmp/dy");
-
-        float sigma_x = 1.2f;
-        float sigma_y = 1.2f;
-        img->smooth<>(sigma_x, sigma_y, dx);
-        img->write_pnm("/tmp/smoothed_xy");
-
-
-          dx_img = short_to_image(dx, img->w(), img->h());
-          dy_img = short_to_image(dy, img->w(), img->h());
-          dx_img->write_pnm("/tmp/dx");
-          dy_img->write_pnm("/tmp/dy");
-
-     //    delete [] dx;
-     //    delete [] dy;
-     //    delete dx_img;
-     //    delete dy_img;
-
-        return EXIT_SUCCESS;
+     return EXIT_SUCCESS;
 }
 

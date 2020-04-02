@@ -62,4 +62,4 @@ int main(int argc, char** argv)
 }
 ```
 
-![alt text](https://github.com/feyil/Harris-Corner-Detection-Implementation/blob/master/screenshots/keypoint.png "smooth")
+![alt text](https://github.com/feyil/Harris-Corner-Detection-Implementation/blob/master/screenshots/keypoint.png "keypoint")
